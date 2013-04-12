@@ -1,22 +1,22 @@
 #!/usr/bin/env python -O
 
 
-class NewtonPolynomial(object):
+class NewtonPoly(object):
 
     def __init__(self, x_data, y_data):
-        self.dimension = len(x_data) - 1
-        self.coefficients = self._coefficients(x_data, y_data)
         self._x = x_data
+        self.dim = len(self._x) - 1
+        self.coeff = self._coefficients(self, y_data)
 
-    def evaluate(self, x):
+    def eval(self, x):
         """
         Evaluates Newton's divided difference polynomial p at x.
         The coefficients vector {a} can be computed by the function
         'coefficients'.
         """
 
-        n = self.dimension
-        a = self.coefficients
+        n = self.dim
+        a = self.coeff
         p = a[n]
 
         for k in range(1, n + 1):
@@ -24,15 +24,15 @@ class NewtonPolynomial(object):
 
         return p
 
-    def _coefficients(self, x_data, y_data):
+    def _coefficients(self, y_data):
         """
         Computes the divided difference coefficients.
         """
 
-        m = len(x_data)     # number of data points
+        m = len(self._x)     # number of data points
         a = y_data.copy()
 
         for k in range(1, m):
-            a[k:m] = (a[k:m] - a[k - 1]) / (x_data[k:m] - x_data[k - 1])
+            a[k:m] = (a[k:m] - a[k - 1]) / (self._x[k:m] - self._x[k - 1])
 
         return a
