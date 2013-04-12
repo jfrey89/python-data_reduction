@@ -1,0 +1,6 @@
+*.pyc
+*.pyo
+./data_reduction/*.pyc
+./data_reduction/*.pyo
+./tests/*.pyc
+./tests/*.pyo
