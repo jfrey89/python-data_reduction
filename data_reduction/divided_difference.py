@@ -6,6 +6,7 @@ class NewtonPolynomial(object):
     def __init__(self, x_data, y_data):
         self.dimension = len(x_data) - 1
         self.coefficients = self._coefficients(x_data, y_data)
+        self._x = x_data
 
     def evaluate(self, x):
         """
@@ -19,7 +20,7 @@ class NewtonPolynomial(object):
         p = a[n]
 
         for k in range(1, n + 1):
-            p = a[n - k] + (x - self.x[n - k]) * p
+            p = a[n - k] + (x - self._x[n - k]) * p
 
         return p
 
