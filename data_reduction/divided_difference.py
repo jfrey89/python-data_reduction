@@ -1,31 +1,37 @@
 #!/usr/bin/env python -O
 
 
-def evaluate(a, x_data, x):
-    """
-    p = evaluate(a, x_data, x)
-    Evaluates Newton's divided difference polynomial p at x. The coefficients
-    vector {a} can be computed by the function 'coefficients'.
-    """
+class NewtonPolynomial(object):
 
-    n = len(x_data) - 1     # degree of polynomial
-    p = a[n]
+    def __init__(self, x_data, y_data):
+        self.x = x_data
+        self.y = y_data
 
-    for k in range(1, n + 1):
-        p = a[n - k] + (x - x_data[n - k]) * p
+    def evaluate(self, x):
+        """
+        Evaluates Newton's divided difference polynomial p at x.
+        The coefficients vector {a} can be computed by the function
+        'coefficients'.
+        """
 
-    return p
+        n = len(self.x) - 1     # degree of Polynomial
+        a = self.coefficients(self.x, self.y)
+        p = a[n]
 
+        for k in range(1, n + 1):
+            p = a[n - k] + (x - self.x[n - k]) * p
 
-def coefficients(x_data, y_data):
-    """a = coefficients(x_data, y_data)
-    Computes the divided difference coefficients.
-    """
+        return p
 
-    m = len(x_data)     # number of data points
-    a = y_data.copy()
+    def coefficients(self):
+        """
+        Computes the divided difference coefficients.
+        """
 
-    for k in range(1, m):
-        a[k:m] = (a[k:m] - a[k - 1]) / (x_data[k:m] - x_data[k - 1])
+        m = len(self.x)     # number of data points
+        a = self.y.copy()
 
-    return a
+        for k in range(1, m):
+            a[k:m] = (a[k:m] - a[k - 1]) / (self.x[k:m] - self.x[k - 1])
+
+        return a
