@@ -23,7 +23,7 @@ class NewtonPolynomial(object):
 
         return p
 
-    def _coefficients(x_data, y_data):
+    def _coefficients(self, x_data, y_data):
         """
         Computes the divided difference coefficients.
         """
