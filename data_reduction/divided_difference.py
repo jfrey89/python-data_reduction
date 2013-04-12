@@ -4,8 +4,8 @@
 class NewtonPolynomial(object):
 
     def __init__(self, x_data, y_data):
-        self.x = x_data
-        self.y = y_data
+        self.dimension = len(x_data) - 1
+        self.coefficients = self._coefficients(x_data, y_data)
 
     def evaluate(self, x):
         """
@@ -14,8 +14,8 @@ class NewtonPolynomial(object):
         'coefficients'.
         """
 
-        n = len(self.x) - 1     # degree of Polynomial
-        a = self.coefficients(self.x, self.y)
+        n = self.dimension
+        a = self.coefficients
         p = a[n]
 
         for k in range(1, n + 1):
@@ -23,15 +23,15 @@ class NewtonPolynomial(object):
 
         return p
 
-    def coefficients(self):
+    def _coefficients(x_data, y_data):
         """
         Computes the divided difference coefficients.
         """
 
-        m = len(self.x)     # number of data points
-        a = self.y.copy()
+        m = len(x_data)     # number of data points
+        a = y_data.copy()
 
         for k in range(1, m):
-            a[k:m] = (a[k:m] - a[k - 1]) / (self.x[k:m] - self.x[k - 1])
+            a[k:m] = (a[k:m] - a[k - 1]) / (x_data[k:m] - x_data[k - 1])
 
         return a
