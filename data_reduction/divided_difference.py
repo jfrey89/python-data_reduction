@@ -6,7 +6,7 @@ class NewtonPoly(object):
     def __init__(self, x_data, y_data):
         self._x = x_data
         self.dim = len(x_data) - 1
-        self.coeff = self._coefficients x_data, y_data)
+        self.coeff = self._coefficients(x_data, y_data)
 
     def eval(self, x):
         """
