@@ -1,6 +1,9 @@
 *.pyc
 *.pyo
+*.swp
 ./data_reduction/*.pyc
 ./data_reduction/*.pyo
+./data_reduction/*.swp
 ./tests/*.pyc
 ./tests/*.pyo
+./tests/*.swp
