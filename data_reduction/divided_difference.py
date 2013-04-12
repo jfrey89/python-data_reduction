@@ -8,7 +8,7 @@ class NewtonPoly(object):
     def __init__(self, x_data, y_data):
         self.knots = np.column_stack((x_data, y_data))
         self.dim = len(x_data) - 1
-        self.coeff = self._coefficients(x_data, y_data)
+        self.coeff = self._coefficients(self)
 
     def eval(self, x):
         """
@@ -18,11 +18,12 @@ class NewtonPoly(object):
         """
 
         n = self.dim
+        x_data = self.knots[:, 0]
         a = self.coeff
         p = a[n]
 
         for k in range(1, n + 1):
-            p = a[n - k] + (x - self._x[n - k]) * p
+            p = a[n - k] + (x - x_data[n - k]) * p
 
         return p
 
