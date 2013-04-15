@@ -1,7 +1,6 @@
 #!/usr/bin/env python -O
 
 import numpy as np
-import time
 
 
 class NewtonPoly(object):
@@ -9,9 +8,9 @@ class NewtonPoly(object):
     def __init__(self, x_data, y_data):
         self.x = x_data
         self.y = y_data
-        self.coeff = self.get_coeff()
+        self.coeff = self._coeff()
 
-    def eval_poly(self, x):
+    def eval(self, x):
         """
         Evaluates Newton's divided difference polynomial p at x.
         The coefficients vector {a} can be computed by the function
@@ -26,7 +25,7 @@ class NewtonPoly(object):
 
         return p
 
-    def get_coeff(self):
+    def _coeff(self):
 
         m = len(self.x)     # number of data points
         a = self.y.copy()
@@ -39,10 +38,7 @@ class NewtonPoly(object):
 
 if __name__ == "__main__":
 
-    start_time = time.time()
     x = np.linspace(-20, 20, 1000)
     y = 1 / (1 + 25 * x * x)
 
     poly = NewtonPoly(x, y)
-
-    print time.time() - start_time, "seconds"
