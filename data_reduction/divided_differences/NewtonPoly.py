@@ -28,7 +28,7 @@ class NewtonPoly(object):
 
     def get_coeff(self):
 
-        m = len(self.x) # number of data points
+        m = len(self.x)     # number of data points
         a = self.y.copy()
 
         for k in xrange(1, m):
