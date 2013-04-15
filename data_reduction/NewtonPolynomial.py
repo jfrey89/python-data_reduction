@@ -35,5 +35,5 @@ class NewtonPolynomial(Polynomial):
 
     def __call__(self, x):
         # first compute the sequence 1, (x-x_1), (x-x_1)(x-x_2), ...
-        nps = np.hstack([1., np.cumprod(x - self.xi[:self.dergree])])
+        nps = np.hstack([1., np.cumprod(x - self.xi[:self.degree])])
         return np.dot(self.coeff, nps)

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class Polynomial(object):
@@ -50,13 +51,14 @@ class Polynomial(object):
             b += self.margin * h
         else:
             a, b = ab
-            n = self.plotres
-            x = np.linspace(a, b, n)
-            y = np.vectorize(self.__call__)(x)
-            np.plot(x, y)
+
+        n = self.plotres
+        x = np.linspace(a, b, n)
+        y = np.vectorize(self.__call__)(x)
+        plt.plot(x, y)
 
         if plotinterp:
-            np.plot(self.x, self.y, 'ro')
+            plt.plot(self.x, self.y, 'ro')
 
     def __call__(self, x):
         return np.polyval(self.coeff, x)
