@@ -3,7 +3,6 @@
 import numpy as np
 from data_reduction.Polynomial import Polynomial
 
-
 class NewtonPolynomial(Polynomial):
 
     base = 'Newton'
@@ -15,7 +14,6 @@ class NewtonPolynomial(Polynomial):
             except KeyError:
                 raise ValueError('Coefficients need to be given together \
                                  with abscissae values xi')
-
         super(NewtonPolynomial, self).__init__(**args)
 
     def point_2_coeff(self):
@@ -34,3 +32,8 @@ class NewtonPolynomial(Polynomial):
                 break
 
             yield row[0]
+
+    def __call__(self, x):
+        # first compute the sequence 1, (x-x_1), (x-x_1)(x-x_2), ...
+        nps = np.hstack([1., np.cumprod(x - self.xi[:self.dergree])])
+        return np.dot(self.coeff, nps)
