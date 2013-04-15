@@ -5,7 +5,7 @@ import numpy as np
 
 def make_table(x, y):
     """
-
+    Constructs the divided difference table.
     """
 
     n = len(x)
@@ -43,7 +43,8 @@ def clean_table(table, order=4):
 
 def linear_extrap(x, f):
     """
-
+    Extrapolates a clean divided difference array to the boundary nodes.
+    Extrapolation is linear.
     """
 
     # Assign the linear extrapolation
