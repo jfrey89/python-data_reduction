@@ -2,6 +2,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import linalg
 
 
 class Polynomial(object):
@@ -72,3 +73,6 @@ class Polynomial(object):
     def zeros(self):
         companion = self.companion()
         return np.linalg.eigvals(companion)
+
+    def monomial_2_newton(self):
+        pass
