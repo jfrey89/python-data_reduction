@@ -2,7 +2,7 @@
 
 import numpy as np
 from scipy import linalg
-from data_reduction.Polynomial import Polynomial
+from Polynomial import Polynomial
 
 
 class NewtonPolynomial(Polynomial):
