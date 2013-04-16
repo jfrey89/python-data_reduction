@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
-from scipy import linalg
-import NewtonPolynomial
+from data_reduction.Polynomial import Polynomial
 
 
 class NewtonPolynomial(Polynomial):

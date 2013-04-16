@@ -3,7 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import linalg
-import NewtonPolynomial
+from data_reduction.NewtonPolynomial import NewtonPolynomial
 
 
 class Polynomial(object):
