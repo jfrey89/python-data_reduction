@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
-from data_reduction.Polynomial import Polynomial
+from Polynomial import Polynomial
 
 
 class NewtonPolynomial(Polynomial):
