@@ -3,6 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import linalg
+from data_reduction.NewtonPolynomial import NewtonPolynomial
 
 
 class Polynomial(object):
@@ -26,7 +27,7 @@ class Polynomial(object):
             self.degree = 0
 
     def point_2_coeff(self):
-        return np.linalg.solve(np.vander(self.x), self.y)
+        return linalg.solve(np.vander(self.x), self.y)
 
     def coeff_2_point(self):
         return np.array([[x, self(x)] for x
@@ -75,4 +76,7 @@ class Polynomial(object):
         return np.linalg.eigvals(companion)
 
     def monomial_2_newton(self):
-        pass
+        x = self.x
+        l = linalg.lu(np.transpose(np.vander(x)), transpose_l=True)[0]
+        newtcoeff = np.dot(np.transpose(l), self.coeff)
+        return NewtonPolynomial(coeff=newtcoeff, xi=x)
