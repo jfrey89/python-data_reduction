@@ -3,7 +3,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import linalg
-from data_reduction.NewtonPolynomial import NewtonPolynomial as pN
 
 
 class Polynomial(object):
@@ -78,5 +77,4 @@ class Polynomial(object):
     def monomial_2_newton(self):
         x = self.x
         l = linalg.lu(np.transpose(np.vander(x)), transpose_l=True)[0]
-        newtcoeff = np.dot(np.transpose(l), self.coeff)
-        return pN.NewtonPolynomial(coeff=newtcoeff, xi=x)
+        return newtcoeff = np.dot(np.transpose(l), self.coeff)
