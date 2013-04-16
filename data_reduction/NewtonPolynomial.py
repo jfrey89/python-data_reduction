@@ -41,4 +41,4 @@ class NewtonPolynomial(Polynomial):
         return np.dot(self.coeff, nps)
 
     def newton_2_monomial(self):
-        L, U = linalg.lu(np.transpose(np.fliplr(np.vander(self.x))))
+        pass
