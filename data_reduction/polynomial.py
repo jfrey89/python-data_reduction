@@ -75,11 +75,20 @@ class Polynomial(object):
         return np.linalg.eigvals(companion)
 
     def monomial_2_newton(self):
-        from data_reduction.NewtonPolynomial import NewtonPolynomial
         return NewtonPolynomial(points=self.points)
 
     def __add__(self, other):
-        pass
+        if not isinstance(other, Polynomial):
+            raise ValueError('Operands must be polynomials')
+
+        if len(self.coeff) < len(other.coeff):
+            newcoeff = other.coeff.copy()
+            newcoeff[:len(self.coeff)] += self.coeff
+        else:
+            newcoeff = self.coeff.copy()
+            newcoeff[:len(other.coeff)] += other.coeff
+
+        return Polynomial(coeff=newcoeff)
 
 
 class NewtonPolynomial(Polynomial):
