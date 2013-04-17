@@ -78,15 +78,15 @@ class Polynomial(object):
         return NewtonPolynomial(points=self.points)
 
     def __add__(self, other):
-        if not isinstance(other, Polynomial):
+        if (not isinstance(other, Polynomial)):
             raise ValueError('Operands must be polynomials')
 
         if len(self.coeff) < len(other.coeff):
             newcoeff = other.coeff.copy()
-            newcoeff[:len(self.coeff)] += self.coeff
+            newcoeff[len(other.coeff) - len(self.coeff):] += self.coeff
         else:
             newcoeff = self.coeff.copy()
-            newcoeff[:len(other.coeff)] += other.coeff
+            newcoeff[len(self.coeff) - len(other.coeff):] += other.coeff
 
         return Polynomial(coeff=newcoeff)
 
@@ -146,3 +146,10 @@ class NewtonPolynomial(Polynomial):
 
     def newton_2_monomial(self):
         return Polynomial(points=self.points)
+
+    def __add__(self, other):
+        xi = self.xi
+        pass
+
+    def __changepoints__(self, other):
+        pass
