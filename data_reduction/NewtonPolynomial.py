@@ -40,4 +40,4 @@ class NewtonPolynomial(Polynomial):
         return np.dot(self.coeff, nps)
 
     def newton_2_monomial(self):
-        pass
+        return Polynomial(points=self.points)
