@@ -34,6 +34,24 @@ class NewtonPolynomial(Polynomial):
 
             yield row[0]
 
+    def divdiffcol(self, depth):
+        xi = self.xi
+        row = self.y
+
+        if depth > len(xi):
+            raise ValueError('depth out of bounds')
+
+        for level in xrange(1, depth):
+            row = (row[1:] - row[:-1]) / (xi[level:] - xi[:-level])
+
+            if level == depth:
+                break
+
+            if np.allclose(row, 0):
+                raise ValueError('derivative is identically zero')
+
+        return row
+
     def __call__(self, x):
         # first compute the sequence 1, (x-x_1), (x-x_1)(x-x_2), ...
         nps = np.hstack([1., np.cumprod(x - self.xi[:self.degree])])
