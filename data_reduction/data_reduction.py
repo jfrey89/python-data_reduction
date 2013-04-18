@@ -1,38 +1,41 @@
 import numpy as np
-from polynomial import NewtonPolynomial
+import scipy.misc as sc
+from NewtonPolynomial import NewtonPolynomial
 from scipy.interpolate import interp1d
 
 
-class ApproxDeriv(object):
+def approxderiv(newtpoly, k=4):
+    """
+    Computes a linear interpolant approximation of the Newton Polynomial
+    {newtpoly}. Assumes you want the {k} = 4th derivative but others should
+    be supported.
 
-    def __init__(self, **args):
-
-        if 'points' in args:
-            self.points = np.array(args['points'])
-            self.xi = self.x
-        else:
-            self.points = np.array([[0, 0]])
-            self.xi = np.array([1.])
-
-    @property
-    def x(self):
-        return self.points[:, 0]
-
-    @property
-    def y(self):
-        return self.points[:, 1]
-
-    def __call__(self, x):
-        f = interp1d(self.x, self.y)
-        return f(x)
-
-
-def compute_deriv(pN, k=4):
-    if not isinstance(pN, NewtonPolynomial):
+    Returns an {interp1d} class from {scipy.interpolate}.
+    """
+    if not isinstance(newtpoly, NewtonPolynomial):
         raise ValueError('Input must be Newton polynomial')
 
-    #divdiff = pN.divdiffcol(k+1)
+    if k % 2 == 1:
+        raise ValueError('k must be even for now')
 
+    x = newtpoly.x
+    y = np.zeros(len(x))
+    y[k / 2:len(x) - k / 2] = sc.factorial(k) * newtpoly.divdiffcol(k + 1)
+    # this should probably be a for loop
+    y[1] = linextrap(x[1], np.c_[x[2:4], y[2:4]])
+    y[0] = linextrap(x[0], np.c_[x[1:3], y[1:3]])
+    y[-2] = linextrap(x[-2], np.c_[x[-4:-2], y[-4:-2]])
+    y[-1] = linextrap(x[-1], np.c_[x[-3:-1], y[-3:-1]])
+    return interp1d(x, y)
+
+
+def linextrap(x, pts):
+    xi, yi = pts[:, 0], pts[:, 1]
+    return yi[0] + (x - xi[0]) * (yi[1] - yi[0]) / (xi[1] - xi[0])
 
 if __name__ == "__main__":
+    xi = np.linspace(-5, 5, 101)
+    pts = np.c_[xi, np.sin(xi)]
+    pN = NewtonPolynomial(points=pts)
+    d4pN = approxderiv(pN)
     pass

@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
 import numpy as np
-from polynomial import Polynomial
+from Polynomial import Polynomial
 
 
 class NewtonPolynomial(Polynomial):
-
     base = 'Newton'
 
     def __init__(self, **args):

@@ -75,7 +75,7 @@ class Polynomial(object):
         return np.linalg.eigvals(companion)
 
     def monomial_2_newton(self):
-        from newtonpolynomial import NewtonPolynomial
+        from NewtonPolynomial import NewtonPolynomial
         return NewtonPolynomial(points=self.points)
 
     def __add__(self, other):
