@@ -78,7 +78,7 @@ class Polynomial(object):
         return NewtonPolynomial(points=self.points)
 
     def __add__(self, other):
-        if (not isinstance(other, Polynomial)):
+        if not isinstance(other, Polynomial):
             raise ValueError('Operands must be polynomials')
 
         if len(self.coeff) < len(other.coeff):
@@ -148,8 +148,10 @@ class NewtonPolynomial(Polynomial):
         return Polynomial(points=self.points)
 
     def __add__(self, other):
-        xi = self.xi
+        if not isinstance(other, NewtonPolynomial):
+            raise ValueError('Operands must be Newton polynomials')
         pass
 
     def __changepoints__(self, other):
-        pass
+        pts = np.c_[self.xi, other(self.xi)]
+        return NewtonPolynomial(points=pts).coeff
