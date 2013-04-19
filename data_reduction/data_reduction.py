@@ -8,6 +8,7 @@ class Integral(object):
     def __init__(self, df):
         self.points = np.c_[df.x, df.y]
         self.frnm = self.integrate()
+        self.df = df
 
     @property
     def x(self):
@@ -19,8 +20,12 @@ class Integral(object):
 
     def __call__(self, t0, t1):
         x = self.x
-
-        pass
+        df = self.df
+        (i, k) = np.searchsorted(x, [t0, t1]) + np.c_[1, -1]
+        ivl0 = np.c_[t0, x[i]]
+        ivl1 = np.c_[x[k], t1]
+        return np.trapz(df(ivl0), ivl0) + self.fnrm[k] - self.fnrm[i] + \
+            np.trapz(df(ivl1), ivl1)
 
     def integrate(self):
         x, f = self.x, self.f
@@ -68,5 +73,5 @@ if __name__ == "__main__":
     pts = np.c_[xi, np.sin(xi)]
     pN = NewtonPolynomial(points=pts)
     d4pN = differentiate(pN)
-    #frnm = integrate(np.c_[d4pN.x, d4pN.y])
+    # frnm = integrate(np.c_[d4pN.x, d4pN.y])
     pass
