@@ -9,7 +9,6 @@ class Polynomial(object):
     base = 'monomial'
 
     def __init__(self, **args):
-
         if 'points' in args:
             self.points = np.array(args['points'])
             self.xi = self.x
