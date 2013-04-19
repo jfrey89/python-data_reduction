@@ -22,10 +22,9 @@ class Integral(object):
         x = self.x
         df = self.df
         (i, k) = np.searchsorted(x, [t0, t1]) + np.c_[1, -1]
-        ivl0 = np.c_[t0, x[i]]
-        ivl1 = np.c_[x[k], t1]
-        return np.trapz(df(ivl0), ivl0) + self.fnrm[k] - self.fnrm[i] + \
-            np.trapz(df(ivl1), ivl1)
+        return np.trapz(df([t0, x[i]]), [t0, x[i]]) + \
+            self.fnrm[k] - self.fnrm[i] + \
+            np.trapz(df([x[k], t1]), [x[k], t1])
 
     def integrate(self):
         x, f = self.x, self.f
