@@ -2,6 +2,7 @@
 
 import numpy as np
 import scipy.misc as sc
+import sys
 from scipy.interpolate import interp1d
 from NewtonPolynomial import NewtonPolynomial
 
@@ -68,10 +69,41 @@ def linextrap(x, pts):
 
 
 if __name__ == "__main__":
-    xi = np.linspace(-5, 5, 101)    # should be input param
-    yi = np.sin(xi)
-    pts = np.c_[xi, np.sin(xi)]
-    pN = NewtonPolynomial(points=pts)
-    d4pN_norm = Norm(interp1d(xi, diff(pN, r=4)))
 
-    pass
+    # default values for input parameters
+    C = 1
+    tol = 1e-14
+
+    # read variables from the command line, one by one
+    while len(sys.argv) < 1:
+
+        try:
+            infilename = sys.argv[1]
+            outfilename = sys.argv[2]
+            del sys.argv[1]
+            del sys.argv[2]
+        except:
+            print "Usage:", sys.argv[0], "infile outfile [-options]"
+            sys.exit(1)
+
+        option = sys.argv[1]
+        del sys.argv[1]
+
+        if option == '-input':
+            infilename = str(sys.argv[1])
+            del sys.argv[1]
+        elif option == '-output':
+            outfilename = str(sys.argv[1])
+            del sys.argv[1]
+        elif option == '-C':
+            C = float(sys.argv[1])
+            del sys.argv[1]
+        elif option == '-tol':
+            tol = float(sys.argv[1])
+            del sys.argv[1]
+        else:
+            print sys.argv[0], ': invalid option', option
+            sys.exit(1)
+
+    knots = np.genfromtxt(infilename)
+    ofile = open(outfilename, 'w')
