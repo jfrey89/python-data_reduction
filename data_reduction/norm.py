@@ -7,7 +7,7 @@ from NewtonPolynomial import NewtonPolynomial
 class Norm(object):
     def __init__(self, df):
         self.points = np.c_[df.x, df.y]
-        self.frnm = self._integrate()
+        self.vals = self._integrate()
         self.df = df
 
     @property
@@ -23,7 +23,7 @@ class Norm(object):
         df = self.df
         (i, k) = np.searchsorted(x, [t0, t1]) + np.array([1, -1])
         return np.trapz(df([t0, x[i]]), [t0, x[i]]) + \
-            self.frnm[k] - self.frnm[i] + \
+            self.vals[k] - self.vals[i] + \
             np.trapz(df([x[k], t1]), [x[k], t1])
 
     def _integrate(self):
@@ -36,14 +36,7 @@ class Norm(object):
         return frnm
 
 
-def differentiate(newtpoly, r=4):
-    """
-    Computes a linear interpolant approximation of the Newton Polynomial
-    {newtpoly} derivative. Assumes you want the {k} = 4th derivative but
-    others should be supported.
-
-    Returns an {interp1d} class from {scipy.interpolate}.
-    """
+def diff(newtpoly, r=4):
     if not isinstance(newtpoly, NewtonPolynomial):
         raise ValueError('Input must be Newton polynomial')
 
@@ -56,13 +49,13 @@ def differentiate(newtpoly, r=4):
 
     for i in range(r / 2):
         m = r / 2 - i
-        y[m - 1] = linextrap(x[m - 1], np.c_[x[m:m + 2], y[m:m + 2]])
-        y[-m] = linextrap(x[-m], np.c_[x[-(m + 2):-m], y[-(m + 2):-m]])
+        y[m - 1] = linear_ext(x[m - 1], np.c_[x[m:m + 2], y[m:m + 2]])
+        y[-m] = linear_ext(x[-m], np.c_[x[-(m + 2):-m], y[-(m + 2):-m]])
 
-    return interp1d(x, y)
+    return y
 
 
-def linextrap(x, pts):
+def linear_ext(x, pts):
     xi, yi = pts[:, 0], pts[:, 1]
     return yi[0] + (x - xi[0]) * (yi[1] - yi[0]) / (xi[1] - xi[0])
 
@@ -71,6 +64,5 @@ if __name__ == "__main__":
     xi = np.linspace(-5, 5, 101)
     pts = np.c_[xi, np.sin(xi)]
     pN = NewtonPolynomial(points=pts)
-    d4pN = differentiate(pN, r=4)
-    frnm = Norm(d4pN)
+    pN4_norm = Norm(interp1d(xi, diff(pN, r=4)))
     pass
