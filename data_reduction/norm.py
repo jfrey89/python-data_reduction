@@ -4,10 +4,10 @@ from scipy.interpolate import interp1d
 from NewtonPolynomial import NewtonPolynomial
 
 
-class Integral(object):
+class Norm(object):
     def __init__(self, df):
         self.points = np.c_[df.x, df.y]
-        self.frnm = self.integrate()
+        self.frnm = self._integrate()
         self.df = df
 
     @property
@@ -21,12 +21,12 @@ class Integral(object):
     def __call__(self, t0, t1):
         x = self.x
         df = self.df
-        (i, k) = np.searchsorted(x, [t0, t1]) + np.c_[1, -1]
+        (i, k) = np.searchsorted(x, [t0, t1]) + np.array([1, -1])
         return np.trapz(df([t0, x[i]]), [t0, x[i]]) + \
-            self.fnrm[k] - self.fnrm[i] + \
+            self.frnm[k] - self.frnm[i] + \
             np.trapz(df([x[k], t1]), [x[k], t1])
 
-    def integrate(self):
+    def _integrate(self):
         x, f = self.x, self.f
         frnm = np.zeros(len(x) - 1)
 
@@ -36,7 +36,7 @@ class Integral(object):
         return frnm
 
 
-def differentiate(newtpoly, k=4):
+def differentiate(newtpoly, r=4):
     """
     Computes a linear interpolant approximation of the Newton Polynomial
     {newtpoly} derivative. Assumes you want the {k} = 4th derivative but
@@ -47,15 +47,15 @@ def differentiate(newtpoly, k=4):
     if not isinstance(newtpoly, NewtonPolynomial):
         raise ValueError('Input must be Newton polynomial')
 
-    if k % 2 == 1:
+    if r % 2 == 1:
         raise ValueError('k must be even for now')
 
     x = newtpoly.x
     y = np.zeros(len(x))
-    y[k / 2:len(x) - k / 2] = sc.factorial(k) * newtpoly.divdiffcol(k + 1)
+    y[r / 2:len(x) - r / 2] = sc.factorial(r) * newtpoly.divdiffcol(r + 1)
 
-    for i in range(k / 2):
-        m = k / 2 - i
+    for i in range(r / 2):
+        m = r / 2 - i
         y[m - 1] = linextrap(x[m - 1], np.c_[x[m:m + 2], y[m:m + 2]])
         y[-m] = linextrap(x[-m], np.c_[x[-(m + 2):-m], y[-(m + 2):-m]])
 
@@ -71,6 +71,6 @@ if __name__ == "__main__":
     xi = np.linspace(-5, 5, 101)
     pts = np.c_[xi, np.sin(xi)]
     pN = NewtonPolynomial(points=pts)
-    d4pN = differentiate(pN)
-    # frnm = integrate(np.c_[d4pN.x, d4pN.y])
+    d4pN = differentiate(pN, r=4)
+    frnm = Norm(d4pN)
     pass
