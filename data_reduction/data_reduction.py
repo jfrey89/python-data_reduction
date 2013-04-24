@@ -1,109 +1,82 @@
 #!/usr/bin/env python
 
+
 import numpy as np
 import scipy.misc as sc
-import sys
 from scipy.interpolate import interp1d
-from NewtonPolynomial import NewtonPolynomial
+from polynomial import Newton
+
+
+def differentiate(f, r=4):
+    if not isinstance(f, Newton):
+        raise ValueError('Input must be a Newton polynomial')
+
+    if r % 2 == 1:
+        raise ValueError('r must be even')
+
+    x = f.x
+    y = np.zeros(len(x))
+    y[r / 2:len(x) - r / 2] = sc.factorial(r) * f.divdiffcol(r + 1)
+
+    for i in range(r / 2):
+        m = r / 2 - i
+        y[m - 1] = linear_extrapolate(x[m - 1], np.c_[x[m:m + 2], y[m:m + 2]])
+        y[-m] = linear_extrapolate(x[-m], np.c_[x[-(m + 2):-m],
+                                                y[-(m + 2):-m]])
+
+    return interp1d(x, y)
+
+
+def linear_extrapolate(x, pts):
+    xi, yi = pts[:, 0], pts[:, 1]
+    return yi[0] + (x - xi[0]) * (yi[1] - yi[0]) / (xi[1] - xi[0])
 
 
 class Norm(object):
-    def __init__(self, df):
-        self.points = np.c_[df.x, df.y]
+    def __init__(self, f):
+        self.points = np.c_[f.x, f.y]
         self.frnm = self._integrate()
-        self.df = df
+        self.f = f
 
     @property
     def x(self):
         return self.points[:, 0]
 
     @property
-    def f(self):
+    def y(self):
         return self.points[:, 1]
 
     def __call__(self, t0, t1):
-        """
-        Note: For t0 and t1 in the known x discretization, use the method
-        described in the paper. That is, for x[i] and x[k], just use
-        self.frnm[k] - self.frnm[i].
-        """
-        x = self.x
-        df = self.df
+        x, f = self.x, self.f
+
         (i, k) = np.searchsorted(x, [t0, t1]) + np.array([1, -1])
-        return np.trapz(df([t0, x[i]]), [t0, x[i]]) + \
-            self.frnm[k] - self.frnm[i] + \
-            np.trapz(df([x[k], t1]), [x[k], t1])
+
+        if t0 == x[i]:
+            if t1 == x[k]:
+                return self.frnm[k] - self.frnm[i]
+        else:
+            return np.trapz(np.abs(f([t0, x[i]])), [t0, x[i]]) + \
+                self.frnm[k] - self.frnm[i] + \
+                np.trapz(np.abs(f([x[k], t1])), [x[k], t1])
 
     def _integrate(self):
-        x, f = self.x, self.f
+        x, y = self.x, self.y
         frnm = np.zeros(len(x) - 1)
 
         for i in np.arange(1, len(x)):
-            frnm[i - 1] = np.trapz(f[:i + 1], x[: i + 1])
+            frnm[i - 1] = np.trapz(np.abs(y[:i + 1]), x[:i + 1])
 
         return frnm
 
 
-def diff(newtpoly, r=4):
-    if not isinstance(newtpoly, NewtonPolynomial):
-        raise ValueError('Input must be Newton polynomial')
-
-    if r % 2 == 1:
-        raise ValueError('k must be even for now')
-
-    x = newtpoly.x
-    y = np.zeros(len(x))
-    y[r / 2:len(x) - r / 2] = sc.factorial(r) * newtpoly.divdiffcol(r + 1)
-
-    for i in range(r / 2):
-        m = r / 2 - i
-        y[m - 1] = linextrap(x[m - 1], np.c_[x[m:m + 2], y[m:m + 2]])
-        y[-m] = linextrap(x[-m], np.c_[x[-(m + 2):-m], y[-(m + 2):-m]])
-
-    return y
-
-
-def linextrap(x, pts):
-    xi, yi = pts[:, 0], pts[:, 1]
-    return yi[0] + (x - xi[0]) * (yi[1] - yi[0]) / (xi[1] - xi[0])
-
-
+# main()
 if __name__ == "__main__":
+    # dummy data
+    xi = np.linspace(-5, 5, 1010)
+    yi = -1 / (1 + 25 * np.power(xi, 2))
+    knots = np.c_[xi, yi]
 
-    # default values for input parameters
-    C = 1
-    tol = 1e-14
-
-    # read variables from the command line, one by one
-    while len(sys.argv) < 1:
-
-        try:
-            infilename = sys.argv[1]
-            outfilename = sys.argv[2]
-            del sys.argv[1]
-            del sys.argv[2]
-        except:
-            print "Usage:", sys.argv[0], "infile outfile [-options]"
-            sys.exit(1)
-
-        option = sys.argv[1]
-        del sys.argv[1]
-
-        if option == '-input':
-            infilename = str(sys.argv[1])
-            del sys.argv[1]
-        elif option == '-output':
-            outfilename = str(sys.argv[1])
-            del sys.argv[1]
-        elif option == '-C':
-            C = float(sys.argv[1])
-            del sys.argv[1]
-        elif option == '-tol':
-            tol = float(sys.argv[1])
-            del sys.argv[1]
-        else:
-            print sys.argv[0], ': invalid option', option
-            sys.exit(1)
-
-    knots = np.genfromtxt(infilename)
-    ofile = open(outfilename, 'w')
+    p = Newton(points=knots)
+    d4p_dx4 = differentiate(p, r=4)
+    d4p_norm = Norm(d4p_dx4)
+    pass
