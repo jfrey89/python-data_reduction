@@ -69,6 +69,19 @@ class Norm(object):
         return frnm
 
 
+def F(frnm, a, b, k=3):
+    return np.power(b - a, 3) * frnm(a, b)
+
+def cutab(eps, C=1.0, xi, frnm):
+    E = C * eps
+    t0 = xi[0]
+    n0 = len(xi)
+
+    while j =< n0:
+        if F
+
+
+
 # main()
 if __name__ == "__main__":
     # dummy data
