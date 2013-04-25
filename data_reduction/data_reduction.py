@@ -68,17 +68,39 @@ class Norm(object):
 
         return frnm
 
+def bisection(frnm, a, b, tol=1e-6, nmax=1000):
+    n = 1
+
+    while n <= nmax:
+        c = (a + b) / 2
 
 def F(frnm, a, b, k=3):
     return np.power(b - a, 3) * frnm(a, b)
 
-def cutab(eps, C=1.0, xi, frnm):
+def cutab(eps, xi, frnm, k=3, C=1.0):
     E = C * eps
     t0 = xi[0]
-    n0 = len(xi)
+    b = xi[-1]
+    n = len(xi)
 
-    while j =< n0:
-        if F
+    while True:
+        if j > len(xi):
+            break
+
+        if F(frnm, t0, b, k=3) > E:
+            equal = False
+            interval = np.linspace(t0, b)
+`
+
+            pass
+        elif F(frnm, t0, b, k=3) == E:
+            t0 = b
+            n = j
+            break
+        elif F(frnm, t0, b, k=3) < E:
+            t0 = b
+            n = j
+            pass
 
 
 
