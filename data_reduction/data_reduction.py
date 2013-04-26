@@ -4,7 +4,7 @@
 import numpy as np
 import scipy.misc as sc
 from scipy.interpolate import interp1d
-from data_reduction.polynomial import Newton
+from polynomial import Newton
 
 
 def differentiate(f, r=4):
@@ -30,6 +30,15 @@ def differentiate(f, r=4):
 def linear_extrapolate(x, pts):
     xi, yi = pts[:, 0], pts[:, 1]
     return yi[0] + (x - xi[0]) * (yi[1] - yi[0]) / (xi[1] - xi[0])
+
+
+class BigF(object):
+    def __init__(self, frnm, k=3):
+        self.frnm = frnm
+        self.k = k
+
+    def __call__(self, frnm, a, b):
+        return np.power(b - a, 3) * frnm(a, b)
 
 
 class Norm(object):
@@ -68,53 +77,60 @@ class Norm(object):
 
         return frnm
 
-def bisection(frnm, E, a, b, tol=1e-6, nmax=1000):
+
+def root_bisection(frnm, E, a, b, tol=1e-6, nmax=50):
     n = 1
     t0 = a
+    F = BigF(frnm, k=3)
 
     while n <= nmax:
         c = (a + b) / 2
-        
-        if F(frnm, t0, c) - E == 0 or (b - a) / 2 < tol:
+        Fc = F(t0, c)
+
+        if Fc - E == 0 or (b - a) / 2 < tol:
             return c
-            
+
+        Fa = F(t0, a)
         n += 1
-        
-        if np.sign(F(frnm, t0, c) - E) == np.sign(F(frnm, t0, a) - E):
+
+        if np.sign(Fc - E) == np.sign(Fa - E):
             a = c
         else:
             b = c
-        
+
     raise ValueError("Method failed. Exceeded maximum number of iterations")
 
 
-def F(frnm, a, b, k=3):
-    return np.power(np.abs(b - a), 3) * frnm(a, b)
-
 def cutab(eps, xi, frnm, k=3, C=1.0):
+    first = True
     E = C * eps
-    t0 = xi[0]
+    T = np.array(xi[0])
     b = xi[-1]
     j = 1
-    n = len(xi)
+    F = BigF(frnm, k=3)
 
     while True:
-        if j > len(xi):
+        if j > len(xi) and not first:
             break
 
-        if F(frnm, t0, b, k=3) > E:
-            t0 = bisection(frnm, E, t0, b)
+        if first:
+            n = len(xi)
+
+        if F(T[j], b) > E:
+            t_next = root_bisection(frnm, E, T[j], b)
+            T.append(t_next)
             j += 1
-            pass
-        elif F(frnm, t0, b, k=3) == E:
-            t0 = b
+            continue
+        elif F(T[j], b) == E:
+            T.append(b)
+            n = j
+            return T, n
+        elif F(T[j], b) < E:
+            T.append(b)
             n = j
             break
-        elif F(frnm, t0, b, k=3) < E:
-            t0 = b
-            n = j
-            pass
-    
+        else:
+            print "DEAD"
     pass
 
 
