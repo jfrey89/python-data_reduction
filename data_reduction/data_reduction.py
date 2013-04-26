@@ -4,7 +4,7 @@
 import numpy as np
 import scipy.misc as sc
 from scipy.interpolate import interp1d
-from polynomial import Newton
+from data_reduction.polynomial import Newton
 
 
 def differentiate(f, r=4):
@@ -68,19 +68,34 @@ class Norm(object):
 
         return frnm
 
-def bisection(frnm, a, b, tol=1e-6, nmax=1000):
+def bisection(frnm, E, a, b, tol=1e-6, nmax=1000):
     n = 1
+    t0 = a
 
     while n <= nmax:
         c = (a + b) / 2
+        
+        if F(frnm, t0, c) - E == 0 or (b - a) / 2 < tol:
+            return c
+            
+        n += 1
+        
+        if np.sign(F(frnm, t0, c) - E) == np.sign(F(frnm, t0, a) - E):
+            a = c
+        else:
+            b = c
+        
+    raise ValueError("Method failed. Exceeded maximum number of iterations")
+
 
 def F(frnm, a, b, k=3):
-    return np.power(b - a, 3) * frnm(a, b)
+    return np.power(np.abs(b - a), 3) * frnm(a, b)
 
 def cutab(eps, xi, frnm, k=3, C=1.0):
     E = C * eps
     t0 = xi[0]
     b = xi[-1]
+    j = 1
     n = len(xi)
 
     while True:
@@ -88,10 +103,8 @@ def cutab(eps, xi, frnm, k=3, C=1.0):
             break
 
         if F(frnm, t0, b, k=3) > E:
-            equal = False
-            interval = np.linspace(t0, b)
-`
-
+            t0 = bisection(frnm, E, t0, b)
+            j += 1
             pass
         elif F(frnm, t0, b, k=3) == E:
             t0 = b
@@ -101,7 +114,8 @@ def cutab(eps, xi, frnm, k=3, C=1.0):
             t0 = b
             n = j
             pass
-
+    
+    pass
 
 
 # main()
