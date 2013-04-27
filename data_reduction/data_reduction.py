@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 import numpy as np
 import scipy.misc as sc
 from scipy.interpolate import interp1d
