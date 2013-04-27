@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import division
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import linalg
@@ -73,9 +74,6 @@ class Monomial(object):
         companion = self.companion()
         return np.linalg.eigvals(companion)
 
-    def monomial_2_newton(self):
-        return Newton(points=self.points)
-
     def __add__(self, other):
         if not isinstance(other, Monomial):
             raise ValueError('Operands must be polynomials')
@@ -103,9 +101,9 @@ class Newton(Monomial):
         super(Newton, self).__init__(**args)
 
     def point_2_coeff(self):
-        return np.array(list(self.divdiff()))
+        return np.array(list(self.newtcoeff()))
 
-    def divdiff(self):
+    def newtcoeff(self):
         xi = self.xi
         row = self.y
         yield row[0]
@@ -119,37 +117,24 @@ class Newton(Monomial):
 
             yield row[0]
 
-    def divdiffcol(self, depth):
+    def divdiff(self, n_column):
         xi = self.xi
         row = self.y
 
-        if depth > len(xi):
+        if n_column > len(xi):
             raise ValueError('depth out of bounds')
 
-        for level in xrange(1, depth):
+        for level in xrange(1, n_column):
             row = (row[1:] - row[:-1]) / (xi[level:] - xi[:-level])
 
-            if level == depth:
-                break
+            if level == n_column:
+                return row
 
             if np.allclose(row, 0):
-                raise ValueError('derivative is identically zero')
+                break
 
-        return row
 
     def __call__(self, x):
         # first compute the sequence 1, (x-x_1), (x-x_1)(x-x_2), ...
         nps = np.hstack([1., np.cumprod(x - self.xi[:self.degree])])
         return np.dot(self.coeff, nps)
-
-    def newton_2_monomial(self):
-        return Monomial(points=self.points)
-
-    def __add__(self, other):
-        if not isinstance(other, Newton):
-            raise ValueError('Operands must be Newton polynomials')
-        pass
-
-    def __changepoints__(self, other):
-        pts = np.c_[self.xi, other(self.xi)]
-        return Newton(points=pts).coeff
