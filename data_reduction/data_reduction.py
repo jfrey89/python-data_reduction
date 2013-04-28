@@ -4,6 +4,7 @@ import numpy as np
 from data_reduction.polynomial import Monomial, Newton
 from data_reduction.dr_dxr import dr_dxr
 from data_reduction.norm import Norm
+from data_reduction.bisection import bisection
 
 # main()
 if __name__ == "__main__":
@@ -17,4 +18,6 @@ if __name__ == "__main__":
     q = Monomial(points=knots)
     d4p = dr_dxr(p, r=4)
     norm = Norm(d4p)
+    g = lambda x: norm(xi[0], x) - 5
+    x_e = bisection(g, xi[0], xi[-1])
     pass

@@ -4,7 +4,7 @@ from __future__ import division
 import numpy as np
 
 
-def bisection(f, a, b, tol=10e-4, nmax=50):
+def bisection(f, a, b, tol=10e-16, nmax=100):
     """
     INPUT: Function f, endpoint values a, b, tolerance tol,
     maximum iterations nmax.
@@ -16,15 +16,22 @@ def bisection(f, a, b, tol=10e-4, nmax=50):
     
     while n <= nmax:
         c = (a + b) / 2
+        print "Midpoint c = %f" % c
+        func_val = f(c)
         
-        if f(c) == 0 or (b - a) / 2 < tol:
+        if func_val == 0 or (b - a) / 2 < tol:
+            print "Found a root!"
+            print "Root = %f" % c
+            print "\n%d iterations" % n
             return c
             
         n += 1
         
-        if np.sign(f(c)) == np.sign(f(a)):
-            a = c
-        else:
+        if func_val > 0:
+            print "TOO BIG!!!"
             b = c
+        if func_val < 0:
+            print "too small..."
+            a = c
     
-    return False
+    return c
