@@ -124,15 +124,13 @@ class Newton(Monomial):
         if n_column > len(xi):
             raise ValueError('depth out of bounds')
 
-        for level in xrange(1, n_column):
+        for level in xrange(1, len(xi)):
             row = (row[1:] - row[:-1]) / (xi[level:] - xi[:-level])
 
             if level == n_column:
                 return row
 
-            if np.allclose(row, 0):
-                break
-
+        return 0
 
     def __call__(self, x):
         # first compute the sequence 1, (x-x_1), (x-x_1)(x-x_2), ...

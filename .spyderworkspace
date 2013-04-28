@@ -2,8 +2,10 @@
 S'project_paths'
 p2
 (lp3
-sS'name'
+V/home/will/projects/python-data_reduction
 p4
-Vpython-data_reduction
+asS'name'
 p5
+Vpython-data_reduction
+p6
 s.
