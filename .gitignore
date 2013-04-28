@@ -7,3 +7,5 @@
 ./tests/*.pyc
 ./tests/*.pyo
 ./tests/*.swp
+.spyder*
+./bin/.spyder*
