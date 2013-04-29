@@ -4,7 +4,7 @@ from __future__ import division
 import numpy as np
 
 
-def bisection(f, a, b, tol=10e-16, nmax=100):
+def bisection(f, a, b, tol=10e-8, nmax=100):
     """
     INPUT: Function f, endpoint values a, b, tolerance tol,
     maximum iterations nmax.
