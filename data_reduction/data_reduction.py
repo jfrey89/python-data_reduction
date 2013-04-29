@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
-from data_reduction.polynomial import Monomial, Newton
+from data_reduction.polynomial import Newton
 from data_reduction.dr_dxr import dr_dxr
 from data_reduction.norm import Norm
 from data_reduction.bisection import bisection
@@ -15,7 +15,6 @@ if __name__ == "__main__":
     r = 4
 
     p = Newton(points=knots)
-    q = Monomial(points=knots)
     d4p = dr_dxr(p, r=4)
     norm = Norm(d4p)
     g = lambda x: np.abs(np.power(x - xi[0], 3)) * norm(xi[0], x)
