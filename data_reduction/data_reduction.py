@@ -18,6 +18,7 @@ if __name__ == "__main__":
     q = Monomial(points=knots)
     d4p = dr_dxr(p, r=4)
     norm = Norm(d4p)
-    g = lambda x: norm(xi[0], x) - 5
-    x_e = bisection(g, xi[0], xi[-1])
+    g = lambda x: np.abs(np.power(x - xi[0], 3)) * norm(xi[0], x)
+    h = lambda x: g(x) - 0.1
+    x_e = bisection(h, xi[0], xi[-1])
     pass
