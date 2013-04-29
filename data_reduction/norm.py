@@ -20,13 +20,19 @@ class Norm(object):
     def __call__(self, a, b):
         x, f = self.x, self.f
 
+        if a == b:
+            return 0
+
         (i, k) = np.searchsorted(x, [a, b]) + np.array([1, -1])
+
+        if i == len(x):
+            return np.trapz(np.abs(f([a, x[-1]])), [a, x[-1]])
 
         if a == x[i]:
             if b == x[k]:
                 return self.frnm[k] - self.frnm[i]
-
         else:
+            i = i + 1
             return np.trapz(np.abs(f([a, x[i]])), [a, x[i]]) + \
                 self.frnm[k] - self.frnm[i] + \
                 np.trapz(np.abs(f([x[k], b])), [x[k], b])

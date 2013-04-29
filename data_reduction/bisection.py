@@ -13,25 +13,19 @@ def bisection(f, a, b, tol=10e-8, nmax=100):
     """
 
     n = 1
-    
+
     while n <= nmax:
         c = (a + b) / 2
-        print "Midpoint c = %f" % c
         func_val = f(c)
-        
+
         if func_val == 0 or (b - a) / 2 < tol:
-            print "Found a root!"
-            print "Root = %f" % c
-            print "\n%d iterations" % n
             return c
-            
+
         n += 1
-        
+
         if func_val > 0:
-            print "TOO BIG!!!"
             b = c
         if func_val < 0:
-            print "too small..."
             a = c
-    
+
     return c
