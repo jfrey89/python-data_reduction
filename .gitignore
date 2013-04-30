@@ -7,5 +7,6 @@
 ./tests/*.pyc
 ./tests/*.pyo
 ./tests/*.swp
-.spyder*
-./bin/.spyder*
+.spyderproject
+.spyderworkspace
+./bin/.spyderworkspace
