@@ -5,7 +5,7 @@ import data_reduction.bisection as root
 
 
 def cutab(norm, xi, eps, r):
-    C = 10000
+    C = 10e4
     eta = 0.5
     k = r - 1
     T = np.zeros(np.shape(xi))
@@ -29,15 +29,17 @@ def cutab(norm, xi, eps, r):
         ) < 10e-8:
             T[j] = b
             n = j
-            return np.trim_zeros(T, 'b')
+            return np.trim_zeros(T, 'b'), eps
         elif F(b) < E:
             #print "shrink eps: %e -> %e" % (eps, eps * eta)
             T[j] = b
             n = j
             eps = eps * eta
+            print "eps too small...\nRetrying."
             break
 
     n0 = n
+    print "n0 = %d knots" % n0
 
     for iteration in range(0, 100):
         E = C * eps
@@ -57,7 +59,7 @@ def cutab(norm, xi, eps, r):
                     norm(T[j - 1], b) - E / np.abs(np.power(b - T[j - 1], k))
                 ) < 10e-8:
                     T[j] = b
-                    return np.trim_zeros(T, 'b')
+                    return np.trim_zeros(T, 'b'), eps
                 elif F(b) < E:
                     T[j] = b
                     eps = eps * eta
@@ -74,4 +76,4 @@ def cutab(norm, xi, eps, r):
                     eps = eps / eta
                     break
 
-    return np.trim_zeros(T, 'b')
+    return np.trim_zeros(T, 'b'), eps

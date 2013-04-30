@@ -25,13 +25,15 @@ class Norm(object):
 
         (i, k) = np.searchsorted(x, [a, b]) + np.array([1, -1])
 
-        if i == len(x):
+        if i >= len(x) - 1:
             return np.trapz(np.abs(f([a, x[-1]])), [a, x[-1]])
 
         if a == x[i]:
             if b == x[k]:
                 return self.frnm[k] - self.frnm[i]
         else:
+            #print '(a, b) = (%f, %f)' % (a, b)
+            #print '(i, k) = (%d, %d)\n' % (i, k)
             return np.trapz(np.abs(f([a, x[i]])), [a, x[i]]) + \
                 self.frnm[k] - self.frnm[i] + \
                 np.trapz(np.abs(f([x[k], b])), [x[k], b])
