@@ -6,7 +6,7 @@ import numpy as np
 class Norm(object):
     def __init__(self, f):
         self.points = np.c_[f.x, f.y]
-        self.frnm = self.integrate()
+        self.frnm = self.integrate_4_frnm()
         self.f = f
 
     @property
@@ -18,27 +18,26 @@ class Norm(object):
         return self.points[:, 1]
 
     def __call__(self, a, b):
-        x, f = self.x, self.f
+        xi, f = self.x, self.f
+        (j, k) = np.searchsorted(xi, [a, b])
 
-        if a == b:
-            return 0
-
-        (i, k) = np.searchsorted(x, [a, b]) + np.array([1, -1])
-
-        if i >= len(x) - 1:
-            return np.trapz(np.abs(f([a, x[-1]])), [a, x[-1]])
-
-        if a == x[i]:
-            if b == x[k]:
-                return self.frnm[k] - self.frnm[i]
+        # check if they're both in the xi array
+        if a == xi[j] and b == xi[k]:
+            #print '(j, k) = (%d, %d)\n' % (j, k)
+            return self.frnm[k - 1] - self.frnm[j]
+        # check if we're sandwiched between the end point and another point
+        elif b == xi[-1] and a > xi[j - 1]:
+            return np.trapz(np.abs(f([a, xi[-1]])), [a, xi[-1]])
+        elif a == xi[0] and b < xi[1]:
+            return np.trapz(np.abs(f([xi[0], b])), [xi[0], b])
         else:
-            #print '(a, b) = (%f, %f)' % (a, b)
-            #print '(i, k) = (%d, %d)\n' % (i, k)
-            return np.trapz(np.abs(f([a, x[i]])), [a, x[i]]) + \
-                self.frnm[k] - self.frnm[i] + \
-                np.trapz(np.abs(f([x[k], b])), [x[k], b])
+            j = j + 1
+            k = k - 1
+            return np.trapz(np.abs(f([a, xi[j]])), [a, xi[j]]) + \
+                self.frnm[k] - self.frnm[j] + \
+                np.trapz(np.abs(f([xi[k], b])), [xi[k], b])
 
-    def integrate(self):
+    def integrate_4_frnm(self):
         x, y = self.x, self.y
         frnm = np.zeros(len(x) - 1)
 

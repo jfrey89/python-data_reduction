@@ -15,10 +15,10 @@ if __name__ == "__main__":
     r = 4
     tol = 10e-4
     eps = tol
-    #xi = np.linspace(-5, 5, 101)
-    #yi = 1 / (1 + np.power(xi, 2))
-    xi = np.linspace(-2, 2, 101)
-    yi = 10 * xi / (1 + 100 * np.power(xi, 2))
+    xi = np.linspace(-5, 5, 101)
+    yi = 1 / (1 + np.power(xi, 2))
+    #xi = np.linspace(-2, 2, 101)
+    #yi = 10 * xi / (1 + 100 * np.power(xi, 2))
     data = np.c_[xi, yi]
 
     p = poly.Newton(points=data)
@@ -43,8 +43,8 @@ if __name__ == "__main__":
 
     plt.figure()
     plt.plot(xi, yi, 'b')
-    #f = lambda x: 1 / (1 + x ** 2)
-    f = lambda x: 10 * x / (1 + 100 * x ** 2)
+    f = lambda x: 1 / (1 + x ** 2)
+    #f = lambda x: 10 * x / (1 + 100 * x ** 2)
     Ty = np.zeros(len(T))
     for i in range(0, len(T)):
             Ty[i] = f(T[i])
