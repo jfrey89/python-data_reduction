@@ -5,7 +5,7 @@ import data_reduction.bisection as root
 
 
 def cutab(norm, xi, eps, r):
-    C = 10e4
+    C = 1e5
     eta = 0.5
     k = r - 1
     T = np.zeros(np.shape(xi))
@@ -19,6 +19,7 @@ def cutab(norm, xi, eps, r):
     F = lambda x: np.abs(np.power(x - T[j - 1], k)) * norm(T[j - 1], x)
 
     while True:
+        # if we're not on the first iteration
         if F(b) > E:
             g = lambda x: F(x) - E
             x_e = root.bisection(g, T[j - 1], b)
@@ -34,12 +35,13 @@ def cutab(norm, xi, eps, r):
             #print "shrink eps: %e -> %e" % (eps, eps * eta)
             T[j] = b
             n = j
+            #print "eps = %e" % eps
+            #print "too small...\nRetrying."
             eps = eps * eta
-            print "eps too small...\nRetrying."
             break
 
     n0 = n
-    print "n0 = %d knots" % n0
+    print "# of knots:\t%d" % n0
 
     for iteration in range(0, 100):
         E = C * eps
@@ -62,17 +64,21 @@ def cutab(norm, xi, eps, r):
                     return np.trim_zeros(T, 'b'), eps
                 elif F(b) < E:
                     T[j] = b
+                    #print "eps = %e" % eps
+                    #print "too small...\nRetrying."
                     eps = eps * eta
                     break
             elif j > n0:
                 eta = np.sqrt(eta)
                 F = np.abs(np.power(b - T[n0 - 1], k)) * norm(T[n0 - 1], b)
                 if F < E:
-                    #print "shrink eps: %e -> %e" % (eps, eps * eta)
+                    #print "eps = %e" % eps
+                    #print "too small...\nRetrying."
                     eps = eps * eta
                     break
                 else:
-                    #print "grow eps: %e -> %e" % (eps, eps / eta)
+                    #print "eps = %e" % eps
+                    #print "Too large.\nRetrying."
                     eps = eps / eta
                     break
 
