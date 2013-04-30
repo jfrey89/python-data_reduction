@@ -32,7 +32,6 @@ class Norm(object):
             if b == x[k]:
                 return self.frnm[k] - self.frnm[i]
         else:
-            i = i + 1
             return np.trapz(np.abs(f([a, x[i]])), [a, x[i]]) + \
                 self.frnm[k] - self.frnm[i] + \
                 np.trapz(np.abs(f([x[k], b])), [x[k], b])

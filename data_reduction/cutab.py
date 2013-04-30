@@ -5,7 +5,7 @@ import data_reduction.bisection as root
 
 
 def cutab(norm, xi, eps, r):
-    C = 100
+    C = 10000
     eta = 0.5
     k = r - 1
     T = np.zeros(np.shape(xi))
