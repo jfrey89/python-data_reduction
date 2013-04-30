@@ -42,14 +42,14 @@ if __name__ == "__main__":
         run_count += 1
 
     plt.figure()
-    plt.plot(xi, yi, 'b')
+    plt.plot(xi, yi, 'k')
     f = lambda x: 1 / (1 + x ** 2)
     #f = lambda x: 10 * x / (1 + 100 * x ** 2)
     Ty = np.zeros(len(T))
     for i in range(0, len(T)):
             Ty[i] = f(T[i])
 
-    plt.plot(T, Ty, 'ro')
-    plt.plot(xi, fit, 'g.--')
+    plt.plot(T, Ty, 'bo')
+    plt.plot(xi, fit, 'r.--')
 
     pass
