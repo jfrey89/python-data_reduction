@@ -21,7 +21,7 @@ if __name__ == "__main__":
     #yi = 10 * xi / (1 + 100 * np.power(xi, 2))
     data = np.c_[xi, yi]
 
-    p = poly.Newton(points=data)
+    p = poly.NewtonPolynomial(points=data)
     d4p = deriv.dr_dxr(p, r=4)
     norm = norm.Norm(d4p)
     T, eps = cut.cutab(norm, xi, eps, r)

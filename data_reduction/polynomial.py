@@ -1,12 +1,13 @@
 #!/usr/bin/env python
-
+# -*- coding: UTF-8 -*-
 from __future__ import division
+
 import numpy as np
-import matplotlib.pyplot as plt
 import scipy.linalg as sl
+import matplotlib.plot as plt
 
 
-class Monomial(object):
+class PolyNomial(object):
     base = 'monomial'
 
     def __init__(self, **args):
@@ -29,8 +30,11 @@ class Monomial(object):
         return sl.solve(np.vander(self.x), self.y)
 
     def coeff_2_point(self):
-        return np.array([[x, self(x)] for x
-                         in np.linspace(0, 1, len(self.coeff))])
+        return np.array([[x, self(x)]
+                         for x in np.linspace(0, 1, self.degree + 1)])
+
+    def __call__(self, x):
+        return np.polyval(self.coeff, x)
 
     @property
     def x(self):
@@ -40,6 +44,11 @@ class Monomial(object):
     def y(self):
         return self.points[:, 1]
 
+    def __repr__(self):
+        txt = 'Polynomial of degree {degree} \n with coefficients {coeff} \n \
+                in {base} basis.'
+        return txt.format(coeff=self.coeff, degree=self.degree,
+                          base=self.base)
     margin = .05
     plotres = 500
 
@@ -61,27 +70,17 @@ class Monomial(object):
         if plotinterp:
             plt.plot(self.x, self.y, 'ro')
 
-    def __call__(self, x):
-        return np.polyval(self.coeff, x)
-
-    def __repr__(self):
-        txt = 'Polynomial of degree {degree} \n with coefficients {coeff} \n \
-                in {base} basis.'
-        return txt.format(coeff=self.coeff, degree=self.degree,
-                          base=self.base)
-
     def companion(self):
-        degree = self.degree
-        companion = np.eye(degree, k=-1)
+        companion = np.eye(self.degree, k=-1)
         companion[0, :] -= self.coeff[1:] / self.coeff[0]
         return companion
 
     def zeros(self):
         companion = self.companion()
-        return np.linalg.eigvals(companion)
+        return sl.eigvals(companion)
 
     def __add__(self, other):
-        if not isinstance(other, Monomial):
+        if not isinstance(other, PolyNomial):
             raise ValueError('Operands must be polynomials')
 
         if len(self.coeff) < len(other.coeff):
@@ -91,10 +90,10 @@ class Monomial(object):
             newcoeff = self.coeff.copy()
             newcoeff[len(self.coeff) - len(other.coeff):] += other.coeff
 
-        return Monomial(coeff=newcoeff)
+        return PolyNomial(coeff=newcoeff)
 
 
-class Newton(Monomial):
+class NewtonPolynomial(PolyNomial):
     base = 'Newton'
 
     def __init__(self, **args):
@@ -104,7 +103,7 @@ class Newton(Monomial):
             except KeyError:
                 raise ValueError('Coefficients need to be given together \
                                  with abscissae values xi')
-        super(Newton, self).__init__(**args)
+        super(NewtonPolynomial, self).__init__(**args)
 
     def point_2_coeff(self):
         return np.array(list(self.newtcoeff()))
@@ -117,7 +116,7 @@ class Newton(Monomial):
         for level in xrange(1, len(xi)):
             row = (row[1:] - row[:-1]) / (xi[level:] - xi[:-level])
 
-            if np.allclose(row, 0):
+            if np.allclose(row, 0): # check: elements of row nearly zero
                 self.degree = level - 1
                 break
 
