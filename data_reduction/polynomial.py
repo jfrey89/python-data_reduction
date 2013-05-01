@@ -4,7 +4,7 @@ from __future__ import division
 
 import numpy as np
 import scipy.linalg as sl
-import matplotlib.plot as plt
+import matplotlib.pyplot as plt
 
 
 class PolyNomial(object):
