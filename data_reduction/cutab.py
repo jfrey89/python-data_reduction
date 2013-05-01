@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
-import data_reduction.bisection as root
+import data_reduction.bisection as bs
 
 
 def cutab(norm, xi, eps, r):
@@ -22,7 +22,7 @@ def cutab(norm, xi, eps, r):
         # if we're not on the first iteration
         if F(b) > E:
             g = lambda x: F(x) - E
-            x_e = root.bisection(g, T[j - 1], b)
+            x_e = bs.bisect(g, T[j - 1], b)
             T[j] = x_e
             j += 1
         elif np.abs(
@@ -54,7 +54,7 @@ def cutab(norm, xi, eps, r):
             if j <= n0:
                 if F(b) > E:
                     g = lambda x: F(x) - E
-                    x_e = root.bisection(g, T[j - 1], b)
+                    x_e = bs.bisect(g, T[j - 1], b)
                     T[j] = x_e
                     j += 1
                 elif np.abs(
