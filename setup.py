@@ -12,7 +12,7 @@ config = {
     'download_url': 'none',
     'author_email': 'jfrey89@gmail.com',
     'version': '0.1',
-    'install_requires': ['nose', 'numpy', 'matplotlib'],
+    'install_requires': ['nose', 'numpy', 'scipy', 'matplotlib']
     'packages': ['data-reduction'],
     'scripts': [],
     'name': 'python-data_reduction'
