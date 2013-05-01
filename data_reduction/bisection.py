@@ -4,28 +4,26 @@ from __future__ import division
 import numpy as np
 
 
-def bisection(f, a, b, tol=10e-8, nmax=100):
+def bisect(f, a, b, tol=10e-8):
     """
-    INPUT: Function f, endpoint values a, b, tolerance tol,
-    maximum iterations nmax.
-    CONDITIONS: a < b, either f(a) < 0 and f(b) > 0 or f(a) > 0 and f(b) < 0
-    OUTPUT: value which differs from a root of f(x) = 0 by less than tol
+    Implementation of the bisection algorithm.
+    f real valued function
+    a, b interval boundarird (float) with
+        the property f(a) * f(b) <= 0
+    tol tolerance (float)
     """
+    if f(a) * f(b) > 0:
+        raise ValueError("Incorrect initial interval [a, b]")
 
-    n = 1
-
-    while n <= nmax:
+    for i in xrange(100):
         c = (a + b) / 2
-        func_val = f(c)
 
-        if func_val == 0 or (b - a) / 2 < tol:
-            return c
-
-        n += 1
-
-        if func_val > 0:
+        if f(a) * f(c) <= 0:
             b = c
-        if func_val < 0:
+        else:
             a = c
 
-    return c
+        if np.abs(a - b) < tol:
+            return (a + b) / 2
+
+    raise Exception('No root found within the given tolerance {}'.format(tol))
