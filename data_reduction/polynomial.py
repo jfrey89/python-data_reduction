@@ -3,7 +3,7 @@
 from __future__ import division
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import linalg
+import scipy.linalg as sl
 
 
 class Monomial(object):
@@ -26,7 +26,7 @@ class Monomial(object):
             self.degree = 0
 
     def point_2_coeff(self):
-        return linalg.solve(np.vander(self.x), self.y)
+        return sl.solve(np.vander(self.x), self.y)
 
     def coeff_2_point(self):
         return np.array([[x, self(x)] for x
@@ -63,6 +63,12 @@ class Monomial(object):
 
     def __call__(self, x):
         return np.polyval(self.coeff, x)
+
+    def __repr__(self):
+        txt = 'Polynomial of degree {degree} \n with coefficients {coeff} \n \
+                in {base} basis.'
+        return txt.format(coeff=self.coeff, degree=self.degree,
+                          base=self.base)
 
     def companion(self):
         degree = self.degree
@@ -136,3 +142,11 @@ class Newton(Monomial):
         # first compute the sequence 1, (x-x_1), (x-x_1)(x-x_2), ...
         nps = np.hstack([1., np.cumprod(x - self.xi[:self.degree])])
         return np.dot(self.coeff, nps)
+
+    def companion(self):
+        degree = self.degree
+        companion = np.eye(degree, k=-1)
+        diagonal = np.identity(degree, dtype=bool)
+        companion[diagonal] = self.x[:degree]
+        companion[:, -1] -= self.coeff[:degree] / self.coeff[degree]
+        return companion
