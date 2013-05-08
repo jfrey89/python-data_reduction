@@ -35,6 +35,3 @@ nosetests.xml
 .project
 .pydevproject
 
-# Movie files
-*.avi
-*.mp4
