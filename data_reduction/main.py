@@ -21,9 +21,9 @@ if __name__ == "__main__":
     #f = lambda x: 1 / (1 + np.power(x, 2))
     #xi_hd = np.linspace(-5, 5, 1001)
 
-    #xi = np.linspace(-2, 2, 101)
-    #f = lambda x: 10 * x / (1 + 100 * np.power(x, 2))
-    #xi_hd = np.linspace(-2, 2, 1001)
+    xi = np.linspace(-2, 2, 101)
+    f = lambda x: 10 * x / (1 + 100 * np.power(x, 2))
+    xi_hd = np.linspace(-2, 2, 1001)
 
     #xi = np.linspace(-5, 5, 101)
     #f = lambda x: np.abs(x)
@@ -33,9 +33,9 @@ if __name__ == "__main__":
     #f = lambda x: np.sqrt(x)
     #xi_hd = np.linspace(0, 2, 1001)
 
-    xi = np.linspace(0, 5, 101)
-    f = lambda x: np.power(x, 4)
-    xi_hd = np.linspace(0, 5, 1001)
+    #xi = np.linspace(0, 5, 101)
+    #f = lambda x: np.power(x, 4)
+    #xi_hd = np.linspace(0, 5, 1001)
 
     yi = np.zeros(np.shape(xi))
     yi_hd = np.zeros(np.shape(xi_hd))

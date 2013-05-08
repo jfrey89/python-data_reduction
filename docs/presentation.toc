@@ -1,0 +1,5 @@
+\pdcontentsline{0}{2}{B-Splines}
+\pdcontentsline{1}{3}{Advanced Overlays}
+\pdcontentsline{0}{4}{B-Splines}
+\pdcontentsline{0}{5}{Using Transparency}
+
