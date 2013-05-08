@@ -14,23 +14,33 @@ if __name__ == "__main__":
     # dummy data
     run_count = 1
     r = 4
-    tol = 10e-4
+    tol = 1e-3
     eps = tol
 
     #xi = np.linspace(-5, 5, 101)
     #f = lambda x: 1 / (1 + np.power(x, 2))
+    #xi_hd = np.linspace(-5, 5, 1001)
 
     #xi = np.linspace(-2, 2, 101)
     #f = lambda x: 10 * x / (1 + 100 * np.power(x, 2))
+    #xi_hd = np.linspace(-2, 2, 1001)
+
+    #xi = np.linspace(-5, 5, 101)
+    #f = lambda x: np.abs(x)
+    #xi_hd = np.linspace(-5, 5, 1001)
 
     #xi = np.linspace(0, 2, 101)
     #f = lambda x: np.sqrt(x)
+    #xi_hd = np.linspace(0, 2, 1001)
 
     xi = np.linspace(0, 5, 101)
     f = lambda x: np.power(x, 4)
+    xi_hd = np.linspace(0, 5, 1001)
 
     yi = np.zeros(np.shape(xi))
+    yi_hd = np.zeros(np.shape(xi_hd))
     yi[:] = f(xi[:])
+    yi_hd = f(xi_hd[:])
 
     #xi = np.linspace(-2, 2, 101)
     #yi = 10 * xi / (1 + 100 * np.power(xi, 2))
@@ -54,6 +64,7 @@ if __name__ == "__main__":
         eps = eps / 2
         tck = fitpack.splrep(xi, yi, t=T[1:-1])
         fit = fitpack.splev(xi, tck)
+        fit_hd = fitpack.splev(xi_hd, tck)
         fT = np.zeros(np.shape(T))
         fT[:] = f(T[:])
         error = np.abs(fit - yi)
@@ -62,17 +73,25 @@ if __name__ == "__main__":
         fig = plt.figure(figsize=(5, 5))
         ax = fig.add_subplot(111)
         ax.cla()
-        ax.plot(xi, yi, 'b', xi, fit, 'r--', T, fT, 'ko')
+        ax.plot(xi_hd, yi_hd, 'b', linewidth=2.0)
+        ax.plot(xi_hd, fit_hd, 'r--', linewidth=2.0)
+        midpoint = (yi.max() + yi.min()) / 2.0
+        ax.plot(T, midpoint * np.ones(len(T)), 'ko')
+        ax.grid(color='grey')
+        ax.set_title('# of knots: %d; error = %.1e; eps = %.1e' %
+                    (len(T), error.max(), eps))
         fname = '_tmp%03d.png' % run_count
         print 'Saving frame', fname
+        fig.set_size_inches(19.2, 10.8)
         fig.savefig(fname)
         files.append(fname)
         run_count += 1
         plt.close('all')
 
-    print '*' * 10, "MAKING MOVIE animation.png", '*' * 101
+    print '*' * 10, "MAKING MOVIE out.mp4", '*' * 101
     print 'this may take a while'
-    os.system("ffmpeg -qscale 5 -r 0.5 -b 9600 -i _tmp%03d.png movie.mp4")
+    os.system("avconv -r 1/2 -i _tmp%03d.png -c:v libx264 -r 30 -b 65536k \
+            out.mp4")
     os.system('rm _tmp*')
 
     pass

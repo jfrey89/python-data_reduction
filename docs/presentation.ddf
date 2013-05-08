@@ -1,0 +1,12 @@
+[Info]
+InputEncoding=CP1251
+Source=powerdot-template.tex
+DocInfoEncoding=CP1251
+OutlineSource=DDF
+OutlineEncoding=CP1251
+[Layout]
+LeftMarging=1in
+TopMarging=1in
+Magnification=1
+PaperType=Prosper
+Orientation=Landscape

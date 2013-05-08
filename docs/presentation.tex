@@ -1,0 +1,53 @@
+%&latex
+
+\documentclass[style=sailor,size=14pt,display=slidesnotes]{powerdot}
+
+\begin{document}
+
+%+Title
+\title{Data Reduction Using Splines\\ with Free\ Knots}
+\author{Will Frey}
+\date{\today}
+\maketitle
+%-Title
+
+\begin{slide}{B-Spline}
+
+  Power-Dot package automatically generates outline of slides.
+  To take correct outline under \TeX-Word click F5 key.
+
+  The easiest way to create overlays is in using 
+  the \texttt{\textbackslash pause} command.
+  Like following ...
+
+  \begin{itemize}
+    \item This is the first item\pause
+    \item There is more ...
+  \end{itemize}
+
+  \texttt{\textbackslash section} command creates separate slide 
+  which is shown on next frame.
+
+\end{slide}
+
+\section{Advanced Overlays}
+
+\begin{slide}{Using Transparency}
+
+  To learn more about PowerDot package 
+  read original documentation.
+
+  There is just demonstration of using transparency 
+  for overlays.
+
+  \begin{enumerate}[type=1]
+    \item<1> First Item
+    \item<2> Second Item
+    \item<3> Third Item
+  \end{enumerate}
+
+\end{slide}
+
+\end{document}
+
+
